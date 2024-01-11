@@ -1,0 +1,25 @@
+on:
+  workflow_call:
+    inputs:
+      input-string:
+        description: 'what is the string to output'
+        default: 'defaultString'
+        required: true
+        type: string
+        
+jobs:
+  #download artifact and print contents
+  print:
+    runs-on: self-hosted 
+    needs: upload
+    strategy:
+      matrix:
+        numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    steps:  
+    - uses: actions/download-artifact@v4
+      with:
+        name: my-artifact
+    - name: Set the value
+      run: echo "string=$(cat ~/Desktop/bootcamp-dir1/artifact/string.txt)" >> "$GITHUB_ENV"
+    - name: Output String
+      run: echo "$string-${{ matrix.numbers }}"
